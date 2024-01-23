@@ -21,7 +21,7 @@ class AppThemeData {
       hintStyle: TextStyle(
         color: Colors.grey.shade400,
       ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         borderSide: const BorderSide(
@@ -54,6 +54,21 @@ class AppThemeData {
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
         foregroundColor: AppColors.primaryColor,
+      ),
+    ),
+    iconButtonTheme: IconButtonThemeData(
+      style: IconButton.styleFrom(
+        backgroundColor: Colors.grey.shade300,
+        iconSize: 20,
+      ),
+
+    ),
+    appBarTheme: AppBarTheme(
+      backgroundColor: Colors.transparent,
+      titleTextStyle: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.normal,
+          color: Colors.black87
       )
     )
   );

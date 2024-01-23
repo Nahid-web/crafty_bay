@@ -1,4 +1,4 @@
-import 'package:crafty_bay/ui/screens/main_botttom_nav_screen..dart';
+import 'package:crafty_bay/ui/screens/main_bottom_nav_screen..dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

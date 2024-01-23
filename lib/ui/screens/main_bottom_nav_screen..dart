@@ -1,0 +1,52 @@
+import 'package:crafty_bay/presentation/state_holders/main_bottom_nav_controller.dart';
+import 'package:crafty_bay/ui/screens/cart_screen.dart';
+import 'package:crafty_bay/ui/screens/categories_screen.dart';
+import 'package:crafty_bay/ui/screens/home_screen.dart';
+import 'package:crafty_bay/ui/screens/wish_screen.dart';
+import 'package:crafty_bay/ui/utility/app_colors.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class MainBottomNavScreen extends StatefulWidget {
+  const MainBottomNavScreen({super.key});
+
+
+
+  @override
+  State<MainBottomNavScreen> createState() => _MainBottomNavScreenState();
+}
+
+class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
+
+  final List<Widget> _screens = [
+    const HomeScreen(),
+    const CategoriesScreen(),
+    const CartScreen(),
+    const WishScreen(),
+  ];
+  @override
+  Widget build(BuildContext context) {
+    return GetBuilder<MainBottomNavController>(
+      builder: (controller) {
+        return Scaffold(
+          body: _screens[controller.currentIndex],
+          bottomNavigationBar: BottomNavigationBar(
+            selectedItemColor: AppColors.primaryColor,
+            unselectedItemColor: Colors.grey,
+            showUnselectedLabels: true,
+            currentIndex: controller.currentIndex,
+            onTap: (index){
+              controller.changedIndex(index);
+            },
+            items: const [
+              BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Home'),
+              BottomNavigationBarItem(icon: Icon(Icons.dashboard_outlined), label: 'Categories'),
+              BottomNavigationBarItem(icon: Icon(Icons.shopping_cart_outlined), label: 'Cart'),
+              BottomNavigationBarItem(icon: Icon(Icons.favorite_outline), label: 'Wish'),
+            ],
+          ),
+        );
+      }
+    );
+  }
+}
