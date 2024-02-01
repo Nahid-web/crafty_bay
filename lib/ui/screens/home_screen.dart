@@ -1,4 +1,12 @@
+import 'package:crafty_bay/data/models/product_model.dart';
+import 'package:crafty_bay/presentation/state_holders/auth_controller.dart';
+import 'package:crafty_bay/presentation/state_holders/category_controller.dart';
+import 'package:crafty_bay/presentation/state_holders/home_banner_controller.dart';
 import 'package:crafty_bay/presentation/state_holders/main_bottom_nav_controller.dart';
+import 'package:crafty_bay/presentation/state_holders/new_product_controller.dart';
+import 'package:crafty_bay/presentation/state_holders/popular_product_controller.dart';
+import 'package:crafty_bay/presentation/state_holders/special_product_controller.dart';
+import 'package:crafty_bay/ui/screens/auth/verify_email_screen.dart';
 import 'package:crafty_bay/ui/screens/product_list_screen.dart';
 import 'package:crafty_bay/ui/utility/assets_path.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +38,17 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(
                 height: 10,
               ),
-              const BannerCarousel(),
+              SizedBox(
+                  height: 210,
+                  child:
+                      GetBuilder<HomeBannerController>(builder: (controller) {
+                    return Visibility(
+                        visible: controller.inProgress == false,
+                        replacement: const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        child: BannerCarousel(bannerList: controller.bannerListModel.bannerList ?? [],));
+                  })),
               SectionTitle(
                 title: 'All Categories',
                 seeAllOnTap: () {
@@ -38,14 +56,50 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
               categoryList,
-              SectionTitle(title: 'Popular', seeAllOnTap: () {
-                Get.to(()=> const ProductListScreen());
+              SectionTitle(
+                  title: 'Popular',
+                  seeAllOnTap: () {
+                    // Get.to(() => const ProductListScreen());
+                  }),
+              GetBuilder<PopularProductController>(
+                builder: (popularProductController) {
+                  return Visibility(
+                    visible: popularProductController.inProgress == false,
+                    replacement: const CircularProgressIndicator(),
+                    child: productList(
+                      popularProductController.productListModel.productList ?? [],
+                    ),
+                  );
+                }
+              ),
+              SectionTitle(title: 'Special', seeAllOnTap: () {
+                // Get.to(() => const ProductListScreen());
               }),
-              productList,
-              SectionTitle(title: 'Special', seeAllOnTap: (){}),
-              productList,
-              SectionTitle(title: 'New', seeAllOnTap: (){}),
-              productList,
+              GetBuilder<SpecialProductController>(
+                  builder: (specialProductController) {
+                    return Visibility(
+                      visible: specialProductController.inProgress == false,
+                      replacement: const CircularProgressIndicator(),
+                      child: productList(
+                        specialProductController.productListModel.productList ?? [],
+                      ),
+                    );
+                  }
+              ),
+              SectionTitle(title: 'New', seeAllOnTap: () {
+                // Get.to(() => const ProductListScreen());
+              }),
+              GetBuilder<NewProductController>(
+                  builder: (newProductController) {
+                    return Visibility(
+                      visible: newProductController.inProgress == false,
+                      replacement: const CircularProgressIndicator(),
+                      child: productList(
+                        newProductController.productListModel.productList ?? [],
+                      ),
+                    );
+                  }
+              ),
             ],
           ),
         ),
@@ -56,31 +110,41 @@ class _HomeScreenState extends State<HomeScreen> {
   SizedBox get categoryList {
     return SizedBox(
       height: 150,
-      child: ListView.separated(
-        itemCount: 10,
-        scrollDirection: Axis.horizontal,
-        // primary: false,
-        // shrinkWrap: false,
-        itemBuilder: (context, index) {
-          return const CategoryItem();
-        },
-        separatorBuilder: (_, __) => const SizedBox(
-          width: 20,
-        ),
+      child: GetBuilder<CategoryController>(
+        builder: (categoryController) {
+          return Visibility(
+            visible: categoryController.inProgress == false,
+            replacement: const Center(child: CircularProgressIndicator(),),
+            child: ListView.separated(
+              itemCount: categoryController.categoryListModel.categoryList?.length ?? 0,
+              scrollDirection: Axis.horizontal,
+              // primary: false,
+              // shrinkWrap: false,
+              itemBuilder: (context, index) {
+                return CategoryItem(
+                  categoryListItem: categoryController.categoryListModel.categoryList![index],
+                );
+              },
+              separatorBuilder: (_, __) => const SizedBox(
+                width: 20,
+              ),
+            ),
+          );
+        }
       ),
     );
   }
 
-  SizedBox get productList {
+  SizedBox productList (List<ProductModel> productList){
     return SizedBox(
       height: 180,
       child: ListView.separated(
-        itemCount: 10,
+        itemCount: productList.length ,
         scrollDirection: Axis.horizontal,
         // primary: false,
         // shrinkWrap: false,
         itemBuilder: (context, index) {
-          return const ProductCardItem();
+          return ProductCardItem(product: productList[index],);
         },
         separatorBuilder: (_, __) => const SizedBox(
           width: 20,
@@ -118,7 +182,10 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       actions: [
         IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Get.find<AuthController>().clearAuthData();
+            Get.offAll(() => const VerifyEmailScreen());
+          },
           icon: const Icon(
             Icons.person_outline,
             color: Colors.grey,
@@ -148,5 +215,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-

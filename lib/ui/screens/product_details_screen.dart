@@ -44,7 +44,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         leading: IconButton(
           onPressed: () {
             // Get.find<MainBottomNavController>().backToHome();
-            Get.offAll(()=>const MainBottomNavScreen());
+            // Get.offAll(()=>const MainBottomNavScreen());
+            Get.back();
 
           },
           icon: const Icon(Icons.arrow_back_ios),

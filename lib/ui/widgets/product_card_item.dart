@@ -1,3 +1,4 @@
+import 'package:crafty_bay/data/models/product_model.dart';
 import 'package:crafty_bay/ui/screens/product_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,7 +9,10 @@ import '../utility/assets_path.dart';
 class ProductCardItem extends StatelessWidget {
   const ProductCardItem({
     super.key,
+    required this.product
   });
+
+  final ProductModel product;
 
   @override
   Widget build(BuildContext context) {
@@ -27,11 +31,11 @@ class ProductCardItem extends StatelessWidget {
                   topLeft: Radius.circular(10),
                   topRight: Radius.circular(10),
                 ),
-                child: Image.asset(
-                  AssetsPath.dummyShoesJpeg,
+                child: Image.network(
+                  product.image ?? '',
                   height: 100,
-                  width: 140,
-                  fit: BoxFit.fill,
+                  width: 110,
+                  fit: BoxFit.scaleDown,
                 ),
               ),
               const SizedBox(
@@ -40,10 +44,10 @@ class ProductCardItem extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Text(
-                    'New Year Shoes 30',
-                    style: TextStyle(
-                      fontSize: 13,
+                  Text(
+                    product.title ?? '',
+                    style: const TextStyle(
+                      fontSize: 12,
                       color: Colors.black54,
                     ),
                   ),
@@ -53,21 +57,22 @@ class ProductCardItem extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      const Text(
-                        '\$100',
-                        style: TextStyle(
+                      Text(
+                        product.price ?? '',
+                        style: const TextStyle(
                             fontSize: 13, color: AppColors.primaryColor),
                       ),
-                     const Wrap(
+                     Wrap(
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.star,
                             size: 15,
+                            color: Colors.amber,
                           ),
                           Text(
-                            '4.8',
-                            style: TextStyle(
+                            product.star.toString() ,
+                            style: const TextStyle(
                                 fontSize: 13, color: Colors.black54),
                           ),
                         ],
@@ -80,7 +85,7 @@ class ProductCardItem extends StatelessWidget {
                             Icons.favorite_outline,
                             size: 18,
                             color: Colors.white54,
-                          )),
+                          ),),
                     ],
                   )
                 ],

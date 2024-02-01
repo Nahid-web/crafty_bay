@@ -42,7 +42,7 @@ class _WishScreenState extends State<WishScreen> {
 
             ),
             itemBuilder: (context, index) {
-              return const ProductCardItem();
+              // return const ProductCardItem();
             },),
         ),
       ),

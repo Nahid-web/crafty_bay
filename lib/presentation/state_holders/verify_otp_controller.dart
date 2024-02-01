@@ -1,5 +1,6 @@
 import 'package:crafty_bay/data/models/response_data.dart';
 import 'package:crafty_bay/data/services/network_caller.dart';
+import 'package:crafty_bay/presentation/state_holders/auth_controller.dart';
 import 'package:crafty_bay/presentation/state_holders/read_profile_data_controller.dart';
 import 'package:get/get.dart';
 
@@ -26,6 +27,9 @@ class VerifyOtpController extends GetxController{
       final result = await Get.find<ReadProfileDataController>().readProfileData(token);
       if(result){
         _shouldNavigateCompleteProfile = Get.find<ReadProfileDataController>().isProfileCompleted == false;
+        if(_shouldNavigateCompleteProfile == false){
+          await Get.find<AuthController>().saveUserDetails(token, Get.find<ReadProfileDataController>().profile);
+        }
       }
       else {
         _errorMessage = Get.find<ReadProfileDataController>().errorMessage;

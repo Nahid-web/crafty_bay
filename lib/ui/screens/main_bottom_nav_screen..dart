@@ -1,4 +1,9 @@
+import 'package:crafty_bay/presentation/state_holders/product_controller.dart';
+import 'package:crafty_bay/presentation/state_holders/category_controller.dart';
 import 'package:crafty_bay/presentation/state_holders/main_bottom_nav_controller.dart';
+import 'package:crafty_bay/presentation/state_holders/new_product_controller.dart';
+import 'package:crafty_bay/presentation/state_holders/popular_product_controller.dart';
+import 'package:crafty_bay/presentation/state_holders/special_product_controller.dart';
 import 'package:crafty_bay/ui/screens/cart_screen.dart';
 import 'package:crafty_bay/ui/screens/categories_screen.dart';
 import 'package:crafty_bay/ui/screens/home_screen.dart';
@@ -6,6 +11,8 @@ import 'package:crafty_bay/ui/screens/wish_screen.dart';
 import 'package:crafty_bay/ui/utility/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../presentation/state_holders/home_banner_controller.dart';
 
 class MainBottomNavScreen extends StatefulWidget {
   const MainBottomNavScreen({super.key});
@@ -18,12 +25,24 @@ class MainBottomNavScreen extends StatefulWidget {
 
 class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
 
+
+
   final List<Widget> _screens = [
     const HomeScreen(),
     const CategoriesScreen(),
     const CartScreen(),
     const WishScreen(),
   ];
+
+  @override
+  void initState() {
+    Get.find<HomeBannerController>().getHomeBanner();
+    Get.find<CategoryController>().getCategoryList();
+    Get.find<PopularProductController>().getPopularProductList();
+    Get.find<SpecialProductController>().getSpecialProductList();
+    Get.find<NewProductController>().getNewProductList();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return GetBuilder<MainBottomNavController>(
