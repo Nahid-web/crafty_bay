@@ -8,6 +8,14 @@ class Urls{
  static const String categoryList = '$_baseUrl/CategoryList';
 
  static const String popularProductList = '$_baseUrl/ListProductByRemark/popular';
+ static const String newProductList = '$_baseUrl/ListProductByRemark/new';
+ static const String specialProductList = '$_baseUrl/ListProductByRemark/special';
 
  static String productsByCategory(categoryId) => '$_baseUrl/ListProductByCategory/$categoryId';
+
+ static String productsByProductId(productId) => '$_baseUrl/ProductDetailsById/$productId';
+
+ static const String addToCart = '$_baseUrl/CreateCartList';
+
+ static const String getCartList = '$_baseUrl/CartList';
 }

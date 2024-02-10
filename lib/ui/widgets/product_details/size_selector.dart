@@ -15,9 +15,9 @@ class _SizeSelectorState extends State<SizeSelector> {
   late String _selectedSize ;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _selectedSize = widget.sizes.first;
+    widget.onChange(_selectedSize);
   }
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class _SizeSelectorState extends State<SizeSelector> {
       children: widget.sizes
           .map(
             (size) => InkWell(
-          radius: 16,
+          radius: 20,
           borderRadius: BorderRadius.circular(100),
           onTap: () {
             _selectedSize = size;
@@ -34,8 +34,8 @@ class _SizeSelectorState extends State<SizeSelector> {
           },
           child: Container(
             margin: const EdgeInsets.all(5),
-            height: 30,
-            width: 30,
+            height: 35,
+            width: 35,
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: _selectedSize == size
@@ -50,6 +50,7 @@ class _SizeSelectorState extends State<SizeSelector> {
               size,
               style: TextStyle(
                 color: Colors.grey.shade600,
+                fontSize: 13,
               ),
             ),
           ),

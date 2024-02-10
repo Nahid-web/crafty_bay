@@ -1,12 +1,10 @@
 
-import 'package:crafty_bay/data/models/product_list_model.dart';
 import 'package:crafty_bay/data/models/response_data.dart';
 import 'package:crafty_bay/data/services/network_caller.dart';
 import 'package:get/get.dart';
 import '../../data/utility/urls.dart';
 
-class NewProductController extends GetxController {
-
+class AddToCartController extends GetxController {
   bool _inProgress = false;
 
   bool get inProgress => _inProgress;
@@ -15,21 +13,23 @@ class NewProductController extends GetxController {
 
   String get errorMessage => _errorMessage;
 
-  ProductListModel _productListModel = ProductListModel();
-
-  ProductListModel get productListModel => _productListModel;
-
-  Future<bool> getNewProductList() async {
+  Future<bool> addToCart(int productId, String color, String size) async {
     bool isSuccess = false;
     _inProgress = true;
     update();
-    final ResponseData response = await NetworkCaller().getRequest(Urls.newProductList);
+    Map<String, dynamic> inputParams = {
+      "product_id": productId,
+      "color": color,
+      "size": size
+    };
+    final ResponseData response = await NetworkCaller().postRequest(
+      Urls.addToCart,
+      body: inputParams,
+    );
     _inProgress = false;
-    if(response.isSuccess){
-      _productListModel = ProductListModel.fromJson(response.responseBody);
+    if (response.isSuccess) {
       isSuccess = true;
-    }
-    else {
+    } else {
       _errorMessage = response.errorMessage;
     }
     update();

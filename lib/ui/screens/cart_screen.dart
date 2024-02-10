@@ -1,3 +1,5 @@
+
+import 'package:crafty_bay/presentation/state_holders/cart_list_controller.dart';
 import 'package:crafty_bay/presentation/state_holders/main_bottom_nav_controller.dart';
 import 'package:crafty_bay/ui/utility/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,15 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Get.find<CartListController>().getCartList();
+    });
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -24,23 +35,30 @@ class _CartScreenState extends State<CartScreen> {
         ),
         title: const Text('Cart'),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.separated(
-              // shrinkWrap: true,
-              itemCount: 4,
-              itemBuilder: (context, index) {
-                return const CartProductItem();
-              },
-              separatorBuilder: (_, __) => const SizedBox(
-                height: 5,
+      body: GetBuilder<CartListController>(builder: (cartListController) {
+        if (cartListController.inProgress) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        return Column(
+          children: [
+            Expanded(
+              child: ListView.separated(
+                // shrinkWrap: true,
+                itemCount: cartListController.cartListModel.cartItemList?.length ?? 0,
+                itemBuilder: (context, index) {
+                  return const CartProductItem();
+                },
+                separatorBuilder: (_, __) => const SizedBox(
+                  height: 5,
+                ),
               ),
             ),
-          ),
-          totalPriceAndCheckSection,
-        ],
-      ),
+            totalPriceAndCheckSection,
+          ],
+        );
+      }),
     );
   }
 
@@ -89,5 +107,3 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 }
-
-

@@ -1,5 +1,8 @@
-import 'package:crafty_bay/ui/screens/home_screen.dart';
-import 'package:crafty_bay/ui/screens/main_bottom_nav_screen..dart';
+import 'package:crafty_bay/data/models/product_details_data.dart';
+import 'package:crafty_bay/presentation/state_holders/add_to_cart_controller.dart';
+import 'package:crafty_bay/presentation/state_holders/auth_controller.dart';
+import 'package:crafty_bay/presentation/state_holders/product_details_controller.dart';
+import 'package:crafty_bay/ui/screens/auth/verify_email_screen.dart';
 import 'package:crafty_bay/ui/widgets/product_details/product_image_carousel.dart';
 import 'package:crafty_bay/ui/widgets/product_details/size_selector.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +13,9 @@ import '../utility/app_colors.dart';
 import '../widgets/product_details/color_selector.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
-  const ProductDetailsScreen({super.key});
+  const ProductDetailsScreen({super.key, required this.productID});
+
+  final int? productID;
 
   @override
   State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
@@ -33,12 +38,17 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     '2XL',
     '3XL',
   ];
-  Color? _selectedColor;
-  String _selectedSize = 'X';
+  String? _selectedColor;
+  String? _selectedSize;
+
+  @override
+  void initState() {
+    Get.find<ProductDetailsController>().getProductDetails(widget.productID!);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-   
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -46,170 +56,182 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             // Get.find<MainBottomNavController>().backToHome();
             // Get.offAll(()=>const MainBottomNavScreen());
             Get.back();
-
           },
           icon: const Icon(Icons.arrow_back_ios),
         ),
         title: const Text('Cart'),
       ),
-      body: Column(
-        children: [
-          const ProductImageCarousel(),
-          productDetailsBody,
-          priceAddToCart,
-        ],
+      body: GetBuilder<ProductDetailsController>(
+          builder: (productDetailsController) {
+            if(productDetailsController.inProgress){
+              return const Center(child: CircularProgressIndicator(),);
+            }
+        return Column(
+          children: [
+            ProductImageCarousel(
+              urls: [
+                productDetailsController.productDetails.img1 ?? '',
+                productDetailsController.productDetails.img2 ?? '',
+                productDetailsController.productDetails.img3 ?? '',
+                productDetailsController.productDetails.img4 ?? '',
+              ],
+            ),
+            productDetailsBody(productDetailsController.productDetails),
+            priceAddToCart(productDetailsController.productDetails.product?.price ?? ''),
+          ],
+        );
+      }),
+    );
+  }
+
+  Expanded productDetailsBody(ProductDetailsData productDetails) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  width: 200,
+                  child: Text(
+                    productDetails.product?.title ?? '',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black54,
+                    ),
+                  ),
+                ),
+                ValueListenableBuilder(
+                  valueListenable: noOfItem,
+                  builder: (context, value, _) {
+                    return ItemCount(
+                      initialValue: noOfItem.value,
+                      minValue: 1,
+                      maxValue: 10,
+                      decimalPlaces: 0,
+                      color: AppColors.primaryColor,
+                      buttonSizeHeight: 30,
+                      buttonSizeWidth: 30,
+                      textStyle: const TextStyle(
+                        fontSize: 30,
+                      ),
+                      onChanged: (v) {
+                        noOfItem.value = v.toInt();
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
+            reviewAndRatingRow(productDetails.product?.star ?? 0),
+            const SizedBox(
+              height: 15,
+            ),
+            const Text(
+              'Colors',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.black54,
+              ),
+            ),
+            ColorSelector(
+              colors: productDetails.color
+                      ?.split(',')
+                      .map((e) => getColorFromString(e))
+                      .toList() ??
+                  [],
+              onChanged: (color) => _selectedColor = color.toString(),
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            const Text(
+              'Size',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.black54,
+              ),
+            ),
+            SizeSelector(
+                sizes: productDetails.size?.split(',') ?? [],
+                onChange: (size) {
+                  _selectedSize = size;
+                }),
+            const SizedBox(
+              height: 15,
+            ),
+            const Text(
+              'Description',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.black54,
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              productDetails.des ?? '',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey.shade700,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
 
-  Expanded get productDetailsBody {
-    return Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const SizedBox(
-                      width: 200,
-                      child: Text(
-                        'Happy New Year Special Deal Save 30%',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black54,
-                        ),
-                      ),
-                    ),
-                    ValueListenableBuilder(
-                      valueListenable: noOfItem,
-                      builder: (context, value, _) {
-                        return ItemCount(
-                          initialValue: noOfItem.value,
-                          minValue: 1,
-                          maxValue: 10,
-                          decimalPlaces: 0,
-                          color: AppColors.primaryColor,
-                          buttonSizeHeight: 30,
-                          buttonSizeWidth: 30,
-                          textStyle: const TextStyle(
-                            fontSize: 30,
-                          ),
-                          onChanged: (v) {
-                            noOfItem.value = v.toInt();
-                          },
-                        );
-                      },
-                    ),
-                  ],
-                ),
-                reviewAndRatingRow,
-                const SizedBox(
-                  height: 15,
-                ),
-                const Text(
-                  'Colors',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black54,
-                  ),
-                ),
-                ColorSelector(
-                  colors: productColorList,
-                  onChanged: (color) => _selectedColor = color,
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                const Text(
-                  'Size',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black54,
-                  ),
-                ),
-                SizeSelector(
-                    sizes: productSizeList,
-                    onChange: (size) {
-                      _selectedSize = size;
-                    }),
-                const SizedBox(
-                  height: 15,
-                ),
-                const Text(
-                  'Description',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black54,
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  'This product is very nice, well qualit . Our top piority is comfort'
-                  'dudabal meterial use to make this product This product is very nice, w'
-                  'ell qualit . Our top piority is comfort'
-                  'dudabal meterial use to make this product ',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.shade700,
-                  ),
-                )
-              ],
-            ),
-          ),
-        );
-  }
-
-  Row get reviewAndRatingRow {
+  Row reviewAndRatingRow(double rating) {
     return Row(
-                  children: [
-                    const Icon(
-                      Icons.star,
-                      size: 25,
-                      color: Colors.yellow,
-                    ),
-                    const SizedBox(
-                      width: 2,
-                    ),
-                    const Text(
-                      '4.8',
-                      style: TextStyle(fontSize: 15, color: Colors.black54),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    const Text(
-                      'Reviews',
-                      style: TextStyle(
-                          fontSize: 15, color: AppColors.primaryColor),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Container(
-                        height: 22,
-                        width: 22,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: AppColors.primaryColor,
-                        ),
-                        child: const Icon(
-                          Icons.favorite_outline,
-                          size: 20,
-                          color: Colors.white54,
-                        )),
-                  ],
-                );
+      children: [
+        const Icon(
+          Icons.star,
+          size: 25,
+          color: Colors.yellow,
+        ),
+        const SizedBox(
+          width: 2,
+        ),
+        Text(
+          rating.toStringAsPrecision(2),
+          style: const TextStyle(fontSize: 15, color: Colors.black54),
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        const Text(
+          'Reviews',
+          style: TextStyle(fontSize: 15, color: AppColors.primaryColor),
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        Container(
+            height: 22,
+            width: 22,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              color: AppColors.primaryColor,
+            ),
+            child: const Icon(
+              Icons.favorite_outline,
+              size: 20,
+              color: Colors.white54,
+            )),
+      ],
+    );
   }
 
-  Container get priceAddToCart {
+  Container priceAddToCart(String price) {
     return Container(
       padding: const EdgeInsets.all(30),
       decoration: BoxDecoration(
@@ -222,10 +244,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Wrap(
+          Wrap(
             direction: Axis.vertical,
             children: [
-              Text(
+              const Text(
                 'Price',
                 style: TextStyle(
                   fontSize: 13,
@@ -233,25 +255,90 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 ),
               ),
               Text(
-                '\$1000',
-                style: TextStyle(fontSize: 20, color: AppColors.primaryColor),
+                price,
+                style: const TextStyle(fontSize: 20, color: AppColors.primaryColor),
               ),
             ],
           ),
           SizedBox(
             width: 120,
-            child: ElevatedButton(
-              onPressed: () {},
-              child: const Text(
-                'Add To Cart',
-                style: TextStyle(
-                  fontSize: 10,
+            child:
+                GetBuilder<AddToCartController>(builder: (addToCartController) {
+              return Visibility(
+                visible: addToCartController.inProgress == false,
+                replacement: const Center(child: CircularProgressIndicator(),),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    if (_selectedSize != null && _selectedColor != null) {
+                      if (Get.find<AuthController>().isTokenNotNull) {
+                        final hashCodeColor = colorToHashColorCode(_selectedColor!);
+                        final response = await addToCartController.addToCart(
+                            widget.productID!, 'Red', _selectedSize!);
+                        if (response) {
+                          Get.showSnackbar(
+                            const GetSnackBar(
+                              title: 'Success',
+                              message: 'this product add to cart',duration: Duration(seconds: 2),
+                            ),
+                          );
+                        }
+                        else {
+                          Get.showSnackbar(GetSnackBar(
+                            title: 'Failed',
+                            message: addToCartController.errorMessage,
+                            duration: const Duration(seconds: 2),
+                          ),);
+                        }
+                      } else {
+                        Get.to(() => const VerifyEmailScreen());
+                      }
+                    } else {
+                      Get.showSnackbar(
+                        const GetSnackBar(
+                          title: 'Failed at add to Card',
+                          message: 'Please select color and size',
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text(
+                    'Add To Cart',
+                    style: TextStyle(
+                      fontSize: 10,
+                    ),
+                  ),
                 ),
-              ),
-            ),
+              );
+            }),
           ),
         ],
       ),
     );
+  }
+
+  String colorToString(Color color) {
+    if (color == Colors.red) {
+      return 'Red';
+    } else if (color == Colors.white) {
+      return 'White';
+    } else if (color == Colors.green) {
+      return 'Green';
+    }
+    return 'Grey';
+  }
+
+  Color getColorFromString(String colorCode) {
+    String code = colorCode.replaceAll('#', '');
+    String hexCode = 'FF$code';
+    return Color(int.parse('0x$hexCode'));
+  }
+
+  String colorToHashColorCode(String colorCode) {
+    return colorCode
+        .toString()
+        .replaceAll('0xff', '#')
+        .replaceAll('Color(', '')
+        .replaceAll(')', '');
   }
 }

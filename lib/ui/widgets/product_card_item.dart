@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../utility/app_colors.dart';
-import '../utility/assets_path.dart';
+
 
 class ProductCardItem extends StatelessWidget {
   const ProductCardItem({
@@ -18,7 +18,7 @@ class ProductCardItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: (){
-        Get.to(()=>const ProductDetailsScreen());
+        Get.to(()=>ProductDetailsScreen(productID: product.id,));
       },
       borderRadius: BorderRadius.circular(10),
       child: SizedBox(

@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import '../../utility/app_colors.dart';
 
 class ProductImageCarousel extends StatefulWidget {
-  const ProductImageCarousel({super.key});
+  const ProductImageCarousel({super.key, required this.urls});
+  final List<String> urls;
 
   @override
   State<ProductImageCarousel> createState() => _ProductImageCarouselState();
@@ -27,21 +28,25 @@ class _ProductImageCarouselState extends State<ProductImageCarousel> {
                 _currentIndex.value = index;
               }
           ),
-          items: [1,2,3,4,5].map((i) {
+          items: widget.urls.map((url) {
             return Builder(
               builder: (BuildContext context) {
                 return Container(
                     width: MediaQuery.of(context).size.width,
                     margin: const EdgeInsets.symmetric(horizontal: 1.0),
-                    color: Colors.grey,
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      image: DecorationImage(
+                        image: NetworkImage(url),
+                      )
+                    ),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text('text $i', style: const TextStyle(fontSize: 16.0),),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            for(int i=0; i<5; i++)
+                            for(int i=0; i<widget.urls.length; i++)
                               ValueListenableBuilder(
                                   valueListenable: _currentIndex,
                                   builder: (context, index, _) {
