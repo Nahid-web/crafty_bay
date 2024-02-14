@@ -5,20 +5,18 @@ import 'package:get/get.dart';
 
 import '../utility/app_colors.dart';
 
-
 class ProductCardItem extends StatelessWidget {
-  const ProductCardItem({
-    super.key,
-    required this.product
-  });
+  const ProductCardItem({super.key, required this.product});
 
   final ProductModel product;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (){
-        Get.to(()=>ProductDetailsScreen(productID: product.id,));
+      onTap: () {
+        Get.to(() => ProductDetailsScreen(
+              productID: product.id,
+            ));
       },
       borderRadius: BorderRadius.circular(10),
       child: SizedBox(
@@ -58,11 +56,11 @@ class ProductCardItem extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Text(
-                        product.price ?? '',
+                        '৳${product.price}' ?? '',
                         style: const TextStyle(
                             fontSize: 13, color: AppColors.primaryColor),
                       ),
-                     Wrap(
+                      Wrap(
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           const Icon(
@@ -71,21 +69,22 @@ class ProductCardItem extends StatelessWidget {
                             color: Colors.amber,
                           ),
                           Text(
-                            product.star.toString() ,
+                            product.star.toString(),
                             style: const TextStyle(
                                 fontSize: 13, color: Colors.black54),
                           ),
                         ],
                       ),
                       Container(
-                          height: 20,
-                          width: 20,
-                          color: AppColors.primaryColor,
-                          child: const Icon(
-                            Icons.favorite_outline,
-                            size: 18,
-                            color: Colors.white54,
-                          ),),
+                        height: 20,
+                        width: 20,
+                        color: AppColors.primaryColor,
+                        child: const Icon(
+                          Icons.favorite_outline,
+                          size: 18,
+                          color: Colors.white54,
+                        ),
+                      ),
                     ],
                   )
                 ],

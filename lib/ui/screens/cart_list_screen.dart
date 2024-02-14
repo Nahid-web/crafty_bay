@@ -1,19 +1,20 @@
 
 import 'package:crafty_bay/presentation/state_holders/cart_list_controller.dart';
 import 'package:crafty_bay/presentation/state_holders/main_bottom_nav_controller.dart';
+import 'package:crafty_bay/ui/screens/checkout_screen.dart';
 import 'package:crafty_bay/ui/utility/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../widgets/cart/cart_product_item.dart';
 
-class CartScreen extends StatefulWidget {
-  const CartScreen({super.key});
+class CartListScreen extends StatefulWidget {
+  const CartListScreen({super.key});
 
   @override
-  State<CartScreen> createState() => _CartScreenState();
+  State<CartListScreen> createState() => _CartListScreenState();
 }
 
-class _CartScreenState extends State<CartScreen> {
+class _CartListScreenState extends State<CartListScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -45,24 +46,24 @@ class _CartScreenState extends State<CartScreen> {
           children: [
             Expanded(
               child: ListView.separated(
-                // shrinkWrap: true,
+                shrinkWrap: true,
                 itemCount: cartListController.cartListModel.cartItemList?.length ?? 0,
                 itemBuilder: (context, index) {
-                  return const CartProductItem();
+                  return  CartProductItem(cartItem: cartListController.cartListModel.cartItemList![index],);
                 },
                 separatorBuilder: (_, __) => const SizedBox(
                   height: 5,
                 ),
               ),
             ),
-            totalPriceAndCheckSection,
+            totalPriceAndCheckSection(cartListController.totalPrice),
           ],
         );
-      }),
+      },),
     );
   }
 
-  Container get totalPriceAndCheckSection {
+  Container totalPriceAndCheckSection(RxDouble totalPrice) {
     return Container(
       padding: const EdgeInsets.all(30),
       decoration: BoxDecoration(
@@ -74,26 +75,29 @@ class _CartScreenState extends State<CartScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Wrap(
+          Wrap(
             direction: Axis.vertical,
             children: [
-              Text(
+              const Text(
                 'Total Price',
                 style: TextStyle(
                   fontSize: 13,
                   color: Colors.black87,
                 ),
               ),
-              Text(
-                '\$100000',
-                style: TextStyle(fontSize: 20, color: AppColors.primaryColor),
-              ),
+              Obx(() => Text(
+                '৳$totalPrice',
+                style: const TextStyle(fontSize: 20, color: AppColors.primaryColor),
+              ),),
+
             ],
           ),
           SizedBox(
             width: 100,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Get.to(()=> const CheckoutScreen());
+              },
               child: const Text(
                 'Checkout',
                 style: TextStyle(

@@ -39,16 +39,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 10,
               ),
               SizedBox(
-                  height: 210,
-                  child:
-                      GetBuilder<HomeBannerController>(builder: (controller) {
+                height: 210,
+                child: GetBuilder<HomeBannerController>(
+                  builder: (controller) {
                     return Visibility(
-                        visible: controller.inProgress == false,
-                        replacement: const Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                        child: BannerCarousel(bannerList: controller.bannerListModel.bannerList ?? [],));
-                  })),
+                      visible: controller.inProgress == false,
+                      replacement: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                      child: BannerCarousel(
+                        bannerList: controller.bannerListModel.bannerList ?? [],
+                      ),
+                    );
+                  },
+                ),
+              ),
               SectionTitle(
                 title: 'All Categories',
                 seeAllOnTap: () {
@@ -62,44 +67,44 @@ class _HomeScreenState extends State<HomeScreen> {
                     Get.to(() => const ProductListScreen());
                   }),
               GetBuilder<PopularProductController>(
-                builder: (popularProductController) {
-                  return Visibility(
-                    visible: popularProductController.inProgress == false,
-                    replacement: const CircularProgressIndicator(),
-                    child: productList(
-                      popularProductController.productListModel.productList ?? [],
-                    ),
-                  );
-                }
-              ),
-              SectionTitle(title: 'Special', seeAllOnTap: () {
-                Get.to(() => const ProductListScreen());
+                  builder: (popularProductController) {
+                return Visibility(
+                  visible: popularProductController.inProgress == false,
+                  replacement: const CircularProgressIndicator(),
+                  child: productList(
+                    popularProductController.productListModel.productList ?? [],
+                  ),
+                );
               }),
+              SectionTitle(
+                  title: 'Special',
+                  seeAllOnTap: () {
+                    Get.to(() => const ProductListScreen());
+                  }),
               GetBuilder<SpecialProductController>(
                   builder: (specialProductController) {
-                    return Visibility(
-                      visible: specialProductController.inProgress == false,
-                      replacement: const CircularProgressIndicator(),
-                      child: productList(
-                        specialProductController.productListModel.productList ?? [],
-                      ),
-                    );
-                  }
-              ),
-              SectionTitle(title: 'New', seeAllOnTap: () {
-                Get.to(() => const ProductListScreen());
+                return Visibility(
+                  visible: specialProductController.inProgress == false,
+                  replacement: const CircularProgressIndicator(),
+                  child: productList(
+                    specialProductController.productListModel.productList ?? [],
+                  ),
+                );
               }),
-              GetBuilder<NewProductController>(
-                  builder: (newProductController) {
-                    return Visibility(
-                      visible: newProductController.inProgress == false,
-                      replacement: const CircularProgressIndicator(),
-                      child: productList(
-                        newProductController.productListModel.productList ?? [],
-                      ),
-                    );
-                  }
-              ),
+              SectionTitle(
+                  title: 'New',
+                  seeAllOnTap: () {
+                    Get.to(() => const ProductListScreen());
+                  }),
+              GetBuilder<NewProductController>(builder: (newProductController) {
+                return Visibility(
+                  visible: newProductController.inProgress == false,
+                  replacement: const CircularProgressIndicator(),
+                  child: productList(
+                    newProductController.productListModel.productList ?? [],
+                  ),
+                );
+              }),
             ],
           ),
         ),
@@ -110,41 +115,45 @@ class _HomeScreenState extends State<HomeScreen> {
   SizedBox get categoryList {
     return SizedBox(
       height: 150,
-      child: GetBuilder<CategoryController>(
-        builder: (categoryController) {
-          return Visibility(
-            visible: categoryController.inProgress == false,
-            replacement: const Center(child: CircularProgressIndicator(),),
-            child: ListView.separated(
-              itemCount: categoryController.categoryListModel.categoryList?.length ?? 0,
-              scrollDirection: Axis.horizontal,
-              // primary: false,
-              // shrinkWrap: false,
-              itemBuilder: (context, index) {
-                return CategoryItem(
-                  categoryListItem: categoryController.categoryListModel.categoryList![index],
-                );
-              },
-              separatorBuilder: (_, __) => const SizedBox(
-                width: 20,
-              ),
+      child: GetBuilder<CategoryController>(builder: (categoryController) {
+        return Visibility(
+          visible: categoryController.inProgress == false,
+          replacement: const Center(
+            child: CircularProgressIndicator(),
+          ),
+          child: ListView.separated(
+            itemCount:
+                categoryController.categoryListModel.categoryList?.length ?? 0,
+            scrollDirection: Axis.horizontal,
+            // primary: false,
+            // shrinkWrap: false,
+            itemBuilder: (context, index) {
+              return CategoryItem(
+                categoryListItem:
+                    categoryController.categoryListModel.categoryList![index],
+              );
+            },
+            separatorBuilder: (_, __) => const SizedBox(
+              width: 20,
             ),
-          );
-        }
-      ),
+          ),
+        );
+      }),
     );
   }
 
-  SizedBox productList (List<ProductModel> productList){
+  SizedBox productList(List<ProductModel> productList) {
     return SizedBox(
       height: 180,
       child: ListView.separated(
-        itemCount: productList.length ,
+        itemCount: productList.length,
         scrollDirection: Axis.horizontal,
         // primary: false,
         // shrinkWrap: false,
         itemBuilder: (context, index) {
-          return ProductCardItem(product: productList[index],);
+          return ProductCardItem(
+            product: productList[index],
+          );
         },
         separatorBuilder: (_, __) => const SizedBox(
           width: 20,
@@ -182,8 +191,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       actions: [
         IconButton(
-          onPressed: () {
-            Get.find<AuthController>().clearAuthData();
+          onPressed: () async {
+            await AuthController.clearAuthData();
             Get.offAll(() => const VerifyEmailScreen());
           },
           icon: const Icon(

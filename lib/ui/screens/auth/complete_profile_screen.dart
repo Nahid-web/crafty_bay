@@ -16,11 +16,14 @@ class CompleteProfileScreen extends StatefulWidget {
 
 class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _firstNameTEC = TextEditingController();
-  final TextEditingController _lastNameTEC = TextEditingController();
-  final TextEditingController _mobileTEC = TextEditingController();
-  final TextEditingController _cityTEC = TextEditingController();
-  final TextEditingController _addressTEC = TextEditingController();
+
+  final TextEditingController _cusNameTEC = TextEditingController();
+  final TextEditingController _cusAddressTEC = TextEditingController();
+  final TextEditingController _cusCityTEC = TextEditingController();
+  final TextEditingController _cusStateTEC = TextEditingController();
+  final TextEditingController _cusPostCodeTEC = TextEditingController();
+  final TextEditingController _cusPhoneTEC = TextEditingController();
+  final TextEditingController _shippingAddressTEC = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -37,39 +40,40 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                     height: 100,
                   ),
                   const AppLogo(),
-                  Text(
-                    'Enter OTP Code',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge
-                        ?.copyWith(fontSize: 29),
-                  ),
-                  Text(
-                    'A 4 Digit OTP Code has been Sent',
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
+                  // Text(
+                  //   'Enter OTP Code',
+                  //   style: Theme.of(context)
+                  //       .textTheme
+                  //       .titleLarge
+                  //       ?.copyWith(fontSize: 29),
+                  // ),
+                  // Text(
+                  //   'A 4 Digit OTP Code has been Sent',
+                  //   style: Theme.of(context).textTheme.titleSmall,
+                  // ),
                   const SizedBox(
                     height: 20,
                   ),
                   TextFormField(
-                    controller: _firstNameTEC,
+                    controller: _cusNameTEC,
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Please enter First Name';
+                        return 'Please enter Customer Name';
                       }
                       return null;
                     },
                     decoration: const InputDecoration(
-                      hintText: 'First Name',
+                      hintText: 'Customer Name',
                     ),
                     keyboardType: TextInputType.text,
                     textInputAction: TextInputAction.next,
                   ),
+
                   const SizedBox(
                     height: 15,
                   ),
                   TextFormField(
-                    controller: _lastNameTEC,
+                    controller: _cusAddressTEC,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Please enter Last Name';
@@ -77,7 +81,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                       return null;
                     },
                     decoration: const InputDecoration(
-                      hintText: 'Last Name',
+                      hintText: 'Customer Address',
                     ),
                     keyboardType: TextInputType.text,
                     textInputAction: TextInputAction.next,
@@ -86,15 +90,49 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                     height: 15,
                   ),
                   TextFormField(
-                    controller: _mobileTEC,
+                    controller: _cusCityTEC,
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Please enter an Email';
+                        return 'Please enter Your City';
                       }
                       return null;
                     },
                     decoration: const InputDecoration(
-                      hintText: 'Mobile',
+                      hintText: 'Customer City',
+                    ),
+                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.next,
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  TextFormField(
+                    controller: _cusStateTEC,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please enter Your City';
+                      }
+                      return null;
+                    },
+                    decoration: const InputDecoration(
+                      hintText: 'Customer State',
+                    ),
+                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.next,
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  TextFormField(
+                    controller: _cusPostCodeTEC,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please enter your PostCode';
+                      }
+                      return null;
+                    },
+                    decoration: const InputDecoration(
+                      hintText: 'PostCode',
                     ),
                     keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.next,
@@ -103,28 +141,27 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                     height: 15,
                   ),
                   TextFormField(
-                    controller: _cityTEC,
+                    controller: _cusPhoneTEC,
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Please enter an Email';
+                        return 'Please enter your Phone Number';
                       }
                       return null;
                     },
                     decoration: const InputDecoration(
-                      hintText: 'City',
+                      hintText: 'Phone Number',
                     ),
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.next,
                   ),
                   const SizedBox(
                     height: 15,
                   ),
                   TextFormField(
-                    maxLines: 4,
-                    controller: _addressTEC,
+                    controller: _shippingAddressTEC,
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Please enter an Email';
+                        return 'Please enter your shipping Address';
                       }
                       return null;
                     },
@@ -145,13 +182,23 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                       ),
                       child: ElevatedButton(
                         onPressed: () async {
-                          Get.offAll(const MainBottomNavScreen());
+                          Get.offAll(()=>const MainBottomNavScreen());
                           final createProfileParams = CreateProfileParams(
-                            firstName: _firstNameTEC.text.trim(),
-                            lastName: _lastNameTEC.text.trim(),
-                            mobile: _mobileTEC.text.trim(),
-                            city: _mobileTEC.text.trim(),
-                            shippingAddress: _addressTEC.text.trim(),
+                              cusName: _cusNameTEC.text.trim(),
+                              cusAdd: _cusAddressTEC.text.trim(),
+                              cusCity: _cusCityTEC.text.trim(),
+                              cusState: _cusCityTEC.text.trim(),
+                              cusPostcode: _cusPostCodeTEC.text.trim(),
+                              cusCountry: _cusStateTEC.text.trim(),
+                              cusPhone: _cusPhoneTEC.text.trim(),
+                              cusFax: _cusPhoneTEC.text.trim(),
+                              shipName: _cusNameTEC.text.trim(),
+                              shipAdd: _shippingAddressTEC.text.trim(),
+                              shipCity: _cusCityTEC.text.trim(),
+                              shipState: _cusStateTEC.text.trim(),
+                              shipPostcode: _cusPostCodeTEC.text.trim(),
+                              shipCountry: _cusCityTEC.text.trim(),
+                              shipPhone: _cusPhoneTEC.text.trim(),
                           );
 
                           final bool result = await controller.completeProfile(
@@ -159,6 +206,12 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                               createProfileParams);
 
                           if (result) {
+                            Get.showSnackbar(const GetSnackBar(
+                              title: 'Success',
+                              message: 'Complete Profile Success',
+                              duration: Duration(seconds: 2),
+                              isDismissible: true,
+                            ));
                             Get.offAll(() => const MainBottomNavScreen());
                           } else {
                             Get.showSnackbar(
@@ -182,5 +235,17 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _cusNameTEC.dispose();
+    _cusAddressTEC.dispose();
+    _cusCityTEC.dispose();
+    _cusPostCodeTEC.dispose();
+    _cusPhoneTEC.dispose();
+    _cusStateTEC.dispose();
+    _shippingAddressTEC.dispose();
+    super.dispose();
   }
 }

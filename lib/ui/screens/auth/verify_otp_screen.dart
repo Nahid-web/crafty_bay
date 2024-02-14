@@ -38,7 +38,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 29),
                   ),
                   Text(
-                    'A 4 Digit OTP Code has been Sent',
+                    'A 6 Digit OTP Code has been Sent',
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
                   const SizedBox(
@@ -52,7 +52,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                       }
                       return null ;
                     },
-                    length: 4,
+                    length: 6,
                     appContext: context,
                     obscureText: false,
                     animationType: AnimationType.fade,
@@ -88,7 +88,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                         child: ElevatedButton(
                           onPressed: () async{
                             if(_formKey.currentState!.validate()){
-                              final bool response = await controller.verifyOtp(widget.email, _otpTEController.text.trim());
+                              final bool response = await controller.verifyOtp(widget.email, _otpTEController.text);
                               if(response){
                                 if(controller.shouldNavigateCompleteProfile) {
                                   Get.to(()=> const CompleteProfileScreen());

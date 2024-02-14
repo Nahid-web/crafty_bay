@@ -1,18 +1,23 @@
+import 'package:crafty_bay/data/models/cart_item.dart';
+import 'package:crafty_bay/presentation/state_holders/cart_list_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:item_count_number_button/item_count_number_button.dart';
 
 import '../../utility/app_colors.dart';
 import '../../utility/assets_path.dart';
 
 class CartProductItem extends StatefulWidget {
-  const CartProductItem({super.key});
+  const CartProductItem({super.key, required this.cartItem});
+
+  final CartItem cartItem;
 
   @override
   State<CartProductItem> createState() => _CartProductItemState();
 }
 
 class _CartProductItemState extends State<CartProductItem> {
-  ValueNotifier<int> noOfItem = ValueNotifier(1);
+  late ValueNotifier<int> noOfItem = ValueNotifier(widget.cartItem.quantity);
 
   @override
   Widget build(BuildContext context) {
@@ -26,15 +31,16 @@ class _CartProductItemState extends State<CartProductItem> {
         child: Row(
           children: [
             ClipRRect(
-                borderRadius: BorderRadius.only(
-                    topLeft: const Radius.circular(10),
-                    bottomLeft: const Radius.circular(10)),
-                child: Image.asset(
-                  AssetsPath.dummyShoesJpeg,
-                  width: 100,
-                  height: 130,
-                  fit: BoxFit.fill,
-                )),
+              borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(10),
+                  bottomLeft: Radius.circular(10)),
+              child: Image.network(
+                widget.cartItem.product?.image ?? '',
+                width: 100,
+                height: 130,
+                fit: BoxFit.fill,
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: Column(
@@ -48,36 +54,47 @@ class _CartProductItemState extends State<CartProductItem> {
                         direction: Axis.vertical,
                         children: [
                           Text(
-                            'New Year Special shoe',
+                            widget.cartItem.product?.title ?? '',
                             style: TextStyle(
-                              fontSize: 17,
+                              fontSize: 15,
                               color: Colors.grey.shade700,
                             ),
                           ),
                           Text(
-                            'Color: Red, Size: x ',
+                            'Color: ${widget.cartItem.color}, Size: ${widget.cartItem.size} ',
                             style: TextStyle(
                                 fontSize: 13, color: Colors.grey.shade700),
                           ),
                         ],
                       ),
                       const SizedBox(
-                        width: 60,
+                        width: 30,
                       ),
-                      const Icon(Icons.delete_outline),
+                      GetBuilder<CartListController>(
+                        builder: (cartListController) {
+                          return IconButton(
+                            onPressed: () async{
+                              cartListController.deleteCartListItem(widget.cartItem.productId!);
+                              await Future.delayed(const Duration(seconds: 1));
+                              cartListController.getCartList();
+                            },
+                            icon: const Icon(Icons.delete_outline),
+                          );
+                        }
+                      ),
                     ],
                   ),
                   Row(
                     children: [
                       Text(
-                        '\$100',
-                        style: TextStyle(
+                        '৳${widget.cartItem.product?.price}' ?? '',
+                        style: const TextStyle(
                             fontSize: 17,
                             color: AppColors.primaryColor,
                             fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(
-                        width: 140,
+                      const SizedBox(
+                        width: 110,
                       ),
                       ValueListenableBuilder(
                           valueListenable: noOfItem,
@@ -95,6 +112,8 @@ class _CartProductItemState extends State<CartProductItem> {
                               ),
                               onChanged: (v) {
                                 noOfItem.value = v.toInt();
+                                Get.find<CartListController>().updateQuantity(
+                                    widget.cartItem.id!, noOfItem.value);
                               },
                             );
                           }),

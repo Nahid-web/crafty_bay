@@ -38,6 +38,7 @@ class _ProductImageCarouselState extends State<ProductImageCarousel> {
                       color: Colors.grey,
                       image: DecorationImage(
                         image: NetworkImage(url),
+                        fit: BoxFit.fill
                       )
                     ),
                     child: Column(

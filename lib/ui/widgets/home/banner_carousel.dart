@@ -22,7 +22,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
       children: [
         CarouselSlider(
           options: CarouselOptions(
-              height: 180,
+              height: 170,
               viewportFraction: 1,
               onPageChanged: (index, reason) {
                 _currentIndex.value = index;
@@ -31,26 +31,21 @@ class _BannerCarouselState extends State<BannerCarousel> {
             return Builder(
               builder: (BuildContext context) {
                 return Stack(
-                  alignment: Alignment.centerRight,
+                  // alignment: Alignment.center,
                   children: [
                     Container(
                       width: MediaQuery.of(context).size.width,
-                      margin: const EdgeInsets.symmetric(horizontal: 1),
                       decoration: BoxDecoration(
                         color: AppColors.primaryColor,
                         borderRadius: BorderRadius.circular(10),
-                        // image: DecorationImage(
-                        //   image: NetworkImage(banner.image ?? ''),
-                        //   alignment: Alignment.centerLeft,
-                        //   scale: 1.2
-                        // )
+                        image: DecorationImage(
+                          image: NetworkImage(banner.image ?? ''),
+                          fit: BoxFit.fitHeight
+                        )
                       ),
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.all(16),
-                      child: Image.network(banner.image ?? ''),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(right: 20),
+                      padding: const EdgeInsets.only(left: 20),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -59,7 +54,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
                             style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white),
+                                color: AppColors.primaryColor),
                           ),
                           ElevatedButton(
                             onPressed: () {},
@@ -95,7 +90,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
                       height: 10,
                       width: 10,
                       margin: const EdgeInsets.symmetric(
-                          horizontal: 5, vertical: 10),
+                          horizontal: 5, vertical: 15),
                       decoration: BoxDecoration(
                           color: i == index
                               ? AppColors.primaryColor

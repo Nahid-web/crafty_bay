@@ -4,10 +4,10 @@ import 'package:crafty_bay/presentation/state_holders/main_bottom_nav_controller
 import 'package:crafty_bay/presentation/state_holders/new_product_controller.dart';
 import 'package:crafty_bay/presentation/state_holders/popular_product_controller.dart';
 import 'package:crafty_bay/presentation/state_holders/special_product_controller.dart';
-import 'package:crafty_bay/ui/screens/cart_screen.dart';
+import 'package:crafty_bay/ui/screens/cart_list_screen.dart';
 import 'package:crafty_bay/ui/screens/categories_screen.dart';
 import 'package:crafty_bay/ui/screens/home_screen.dart';
-import 'package:crafty_bay/ui/screens/wish_screen.dart';
+import 'package:crafty_bay/ui/screens/wish_list_screen.dart';
 import 'package:crafty_bay/ui/utility/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -30,7 +30,7 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
   final List<Widget> _screens = [
     const HomeScreen(),
     const CategoriesScreen(),
-    const CartScreen(),
+    const CartListScreen(),
     const WishScreen(),
   ];
 
