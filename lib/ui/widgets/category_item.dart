@@ -28,7 +28,7 @@ class CategoryItem extends StatelessWidget {
             elevation: 0,
             child: Padding(
               padding:  const EdgeInsets.all(10),
-              child: Image.network(categoryListItem.categoryImg ?? '', height: 60, width: 60,),
+              child: Image.network(categoryListItem.categoryImg ?? '', height: 40, width: 60,),
             ),
           ),
           const SizedBox(height: 10,),
